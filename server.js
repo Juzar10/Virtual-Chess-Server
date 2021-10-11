@@ -22,6 +22,38 @@ CreatorColor = {};
 // server.listen(process.env.PORT || 8000);
 
 io.on("connection", (socket) => {
+  //Server Code Starts
+  // socket.emit("me", socket.id);
+
+  // socket.on("disconnect", () => {
+  // 	socket.broadcast.emit("callEnded")
+  // });
+
+  // socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+  // 	io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+  // });
+
+  // socket.on("answerCall", (data) => {
+  // 	io.to(data.to).emit("callAccepted", data.signal)
+  // });
+
+  socket.on("SendRequest", ({ gameid, peerdata }) => {
+    console.log("hello", gameid, peerdata);
+    socket.to(gameid).emit("RequestAccept", { gameid, peerdata });
+  });
+
+  socket.on("callother", ({ gameid, peerdata }) => {
+    console.log("inside call other ", gameid);
+    console.log("inside call other peer data", peerdata);
+
+    socket.to(gameid).emit("answercall", peerdata);
+  });
+
+  socket.on("answertocall", ({ answer, gameid, peerdata }) => {
+    console.log("answer inside ", answer, gameid);
+    socket.to(gameid).emit("replytocallrequest", answer, peerdata);
+  });
+  //Server code ends
   console.log("connect", socket.id);
 
   socket.on("create-game", (game_id, color) => {
