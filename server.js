@@ -38,23 +38,22 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("SendRequest", ({ gameid, peerdata }) => {
-    console.log("hello", gameid, peerdata);
     socket.to(gameid).emit("RequestAccept", { gameid, peerdata });
   });
 
   socket.on("callother", ({ gameid, peerdata }) => {
-    console.log("inside call other ", gameid);
-    console.log("inside call other peer data", peerdata);
 
     socket.to(gameid).emit("answercall", peerdata);
   });
 
+  socket.on("hangup", ({ gameid }) => {
+    socket.to(gameid).emit("hangup")
+  })
+
   socket.on("answertocall", ({ answer, gameid, peerdata }) => {
-    console.log("answer inside ", answer, gameid);
     socket.to(gameid).emit("replytocallrequest", answer, peerdata);
   });
   //Server code ends
-  console.log("connect", socket.id);
 
   socket.on("create-game", (game_id, color) => {
     socket.join(game_id);
